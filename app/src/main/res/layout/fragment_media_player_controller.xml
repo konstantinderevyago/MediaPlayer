@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginRight="20dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/playing_title"
+                android:textColor="@color/white"
+                android:textSize="@dimen/title_size"
+                android:singleLine="true"
+                android:ellipsize="marquee"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:scrollHorizontally="true"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:freezesText="true"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/playing_artist"
+                android:textColor="@color/white"
+                android:textSize="@dimen/artist_size"
+                android:singleLine="true"
+                android:ellipsize="marquee"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:scrollHorizontally="true"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:freezesText="true"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_alignParentRight="true">
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="25dp"
+                android:id="@+id/random_button"
+                android:scaleType="fitEnd"
+                android:background="@null"
+                android:src="@drawable/random_button"/>
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="25dp"
+                android:id="@+id/repeat_button"
+                android:scaleType="fitEnd"
+                android:background="@null"
+                android:src="@drawable/repeat_button"/>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/playing_duration"
+            android:text="@string/track_duration_zero"
+            android:textSize="@dimen/track_duration_size"/>
+
+        <SeekBar
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:id="@+id/track_duration_progress"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/max_duration"
+            android:text="@string/track_duration_zero"
+            android:textSize="@dimen/track_duration_size"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/media_buttons_size"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center">
+
+            <ImageButton
+                android:layout_width="@dimen/media_buttons_size"
+                android:layout_height="wrap_content"
+                android:id="@+id/previous_button"
+                android:background="@drawable/button_previous_selector"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center">
+
+            <ImageButton
+                android:layout_width="@dimen/media_buttons_size"
+                android:layout_height="wrap_content"
+                android:id="@+id/stop_button"
+                android:background="@drawable/button_stop_selector"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center">
+
+            <ImageButton
+                android:layout_width="@dimen/media_buttons_size"
+                android:layout_height="wrap_content"
+                android:id="@+id/play_button"
+                android:background="@drawable/button_play_selector"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center">
+
+            <ImageButton
+                android:layout_width="@dimen/media_buttons_size"
+                android:layout_height="wrap_content"
+                android:id="@+id/pause_button"
+                android:background="@drawable/button_pause_selector"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center">
+
+            <ImageButton
+                android:layout_width="@dimen/media_buttons_size"
+                android:layout_height="wrap_content"
+                android:id="@+id/next_button"
+                android:background="@drawable/button_next_selector"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>
