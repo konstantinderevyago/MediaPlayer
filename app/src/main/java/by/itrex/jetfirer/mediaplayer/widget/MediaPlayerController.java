@@ -2,6 +2,7 @@ package by.itrex.jetfirer.mediaplayer.widget;
 
 import android.app.Fragment;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,8 +12,12 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import by.itrex.jetfirer.mediaplayer.R;
+import by.itrex.jetfirer.mediaplayer.enums.Repeat;
+import by.itrex.jetfirer.mediaplayer.model.Playlist;
+import by.itrex.jetfirer.mediaplayer.model.Track;
 import by.itrex.jetfirer.mediaplayer.service.MediaPlayerService;
 import by.itrex.jetfirer.mediaplayer.service.TrackCompletedListener;
+import by.itrex.jetfirer.mediaplayer.util.Utils;
 
 /**
  * Created by Konstantin on 24.04.2015.
@@ -20,6 +25,9 @@ import by.itrex.jetfirer.mediaplayer.service.TrackCompletedListener;
 public class MediaPlayerController extends Fragment implements View.OnClickListener, SeekBar.OnSeekBarChangeListener, TrackCompletedListener {
 
     private MediaPlayerService mediaPlayerService;
+
+    private SeekBarHandler seekBarHandler;
+    private boolean isViewOn = false;
 
     private TextView playingTitle;
     private TextView playingArtist;
@@ -72,6 +80,39 @@ public class MediaPlayerController extends Fragment implements View.OnClickListe
         }
     }
 
+    private void setPlayingInfo() {
+        Track track = mediaPlayerService.getCurrentTrack();
+        if (track != null) {
+            showPlayingTrackInfo(track);
+        }
+
+        if (mediaPlayerService.isRandom()) {
+            randomButton.setImageResource(R.drawable.random_button_pressed);
+        }
+        switch (mediaPlayerService.getRepeat()) {
+            case REPEAT_ALL:
+                repeatButton.setImageResource(R.drawable.repeat_button_pressed);
+                break;
+            case REPEAT_SINGLE:
+                repeatButton.setImageResource(R.drawable.repeat_button_single_pressed);
+                break;
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        isViewOn = true;
+        seekBarHandleExecute();
+        setPlayingInfo();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        isViewOn = false;
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -81,17 +122,17 @@ public class MediaPlayerController extends Fragment implements View.OnClickListe
             case R.id.repeat_button:
                 onRepeatPressed();
                 break;
-            case R.id.previous_button:
-                onPreviousPressed();
-                break;
-            case R.id.stop_button:
-                onStopPressed();
-                break;
             case R.id.play_button:
                 onPlayPressed();
                 break;
             case R.id.pause_button:
                 onPausePressed();
+                break;
+            case R.id.stop_button:
+                onStopPressed();
+                break;
+            case R.id.previous_button:
+                onPreviousPressed();
                 break;
             case R.id.next_button:
                 onNextPressed();
@@ -100,31 +141,83 @@ public class MediaPlayerController extends Fragment implements View.OnClickListe
     }
 
     private void onRandomPressed() {
-
+        boolean random = mediaPlayerService.isRandom();
+        if (random) {
+            randomButton.setImageResource(R.drawable.random_button);
+        } else {
+            randomButton.setImageResource(R.drawable.random_button_pressed);
+        }
+        mediaPlayerService.setRandom(!random);
     }
 
     private void onRepeatPressed() {
-
-    }
-
-    private void onPreviousPressed() {
-
-    }
-
-    private void onStopPressed() {
-
+        Repeat repeat = mediaPlayerService.getRepeat();
+        switch (repeat) {
+            case REPEAT_OFF:
+                repeatButton.setImageResource(R.drawable.repeat_button_pressed);
+                mediaPlayerService.setRepeat(Repeat.REPEAT_ALL);
+                break;
+            case REPEAT_ALL:
+                repeatButton.setImageResource(R.drawable.repeat_button_single_pressed);
+                mediaPlayerService.setRepeat(Repeat.REPEAT_SINGLE);
+                break;
+            case REPEAT_SINGLE:
+                repeatButton.setImageResource(R.drawable.repeat_button);
+                mediaPlayerService.setRepeat(Repeat.REPEAT_OFF);
+                break;
+        }
     }
 
     private void onPlayPressed() {
-
+        if (!mediaPlayerService.isPlaying()) {
+            mediaPlayerService.startTrack();
+            seekBarHandleExecute();
+        }
     }
 
     private void onPausePressed() {
+        if (mediaPlayerService.isPlaying()) {
+            mediaPlayerService.pauseTrack();
+        }
+    }
 
+    private void onStopPressed() {
+        mediaPlayerService.stopTrack();
+
+        durationProgress.setProgress(0);
+        playingDuration.setText(getString(R.string.track_duration_zero));
+    }
+
+    private void onPreviousPressed() {
+        initTrack(mediaPlayerService.previousTrack());
     }
 
     private void onNextPressed() {
+        initTrack(mediaPlayerService.nextTrack());
+    }
 
+    public void initTrack(Track track) {
+        if (track != null) {
+            showPlayingTrackInfo(track);
+            durationProgress.setProgress(0);
+            seekBarHandleExecute();
+        }
+    }
+
+    public void initPlaylist(Playlist playlist, Track track) {
+        mediaPlayerService.setPlaylist(playlist);
+        mediaPlayerService.startTrack(track);
+        initTrack(track);
+    }
+
+    public void showPlayingTrackInfo(Track track) {
+        if (track != null) {
+            playingTitle.setText(track.getTitle());
+            playingArtist.setText(track.getArtist());
+            playingDuration.setText(getString(R.string.track_duration_zero));
+            maxDuration.setText(Utils.convertDuration(track.getDuration()));
+            durationProgress.setMax(track.getDuration());
+        }
     }
 
     @Override
@@ -133,7 +226,7 @@ public class MediaPlayerController extends Fragment implements View.OnClickListe
         if (fromUser) {
             mediaPlayerService.setTrackPosition(value);
         }
-        playingDuration.setText(convertDuration(value));
+        playingDuration.setText(Utils.convertDuration(value));
     }
 
     @Override
@@ -148,23 +241,45 @@ public class MediaPlayerController extends Fragment implements View.OnClickListe
 
     @Override
     public void trackCompleted() {
-
+        onNextPressed();
     }
 
-    private String convertDuration(int value) {
-        value /= 1000;
-        int minutes = value / 60;
-        int seconds = value - minutes * 60;
+    public class SeekBarHandler extends AsyncTask<Void, Void, Void> {
 
-        StringBuilder durationBuilder = new StringBuilder();
-        if (minutes < 10) {
-            durationBuilder.append("0");
+        @Override
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
         }
-        durationBuilder.append(minutes).append(":");
-        if (seconds < 10) {
-            durationBuilder.append("0");
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+            super.onProgressUpdate(values);
+            durationProgress.setProgress(mediaPlayerService.getCurrentPosition());
         }
-        durationBuilder.append(seconds);
-        return durationBuilder.toString();
+
+        @Override
+        protected Void doInBackground(Void... arg0) {
+            while (mediaPlayerService.isPlaying() && isViewOn) {
+                if (isCancelled()) {
+                    return null;
+                }
+                try {
+                    Thread.sleep(200);
+                } catch (Exception ignored) {
+
+                }
+
+                onProgressUpdate();
+            }
+            return null;
+        }
+    }
+
+    public void seekBarHandleExecute() {
+        if (seekBarHandler != null) {
+            seekBarHandler.cancel(true);
+        }
+        seekBarHandler = new SeekBarHandler();
+        seekBarHandler.execute();
     }
 }

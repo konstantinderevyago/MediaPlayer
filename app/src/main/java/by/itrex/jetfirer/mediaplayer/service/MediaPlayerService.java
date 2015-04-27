@@ -39,6 +39,9 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
     private MediaPlayerService() {
         mediaPlayer = new MediaPlayer();
         mediaPlayer.setOnCompletionListener(this);
+
+        previousTracks = new Stack<>();
+        nextTracks = new Stack<>();
     }
 
     @Override
@@ -53,6 +56,8 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
     private void setTrack(Track track) {
         try {
             if (track != null) {
+                currentTrack = track;
+
                 if (mediaPlayer == null) {
                     mediaPlayer = MediaPlayer.create(this, track.getData());
                 } else {
