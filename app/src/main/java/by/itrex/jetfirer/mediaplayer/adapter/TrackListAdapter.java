@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import java.util.List;
+
 import by.itrex.jetfirer.mediaplayer.R;
 import by.itrex.jetfirer.mediaplayer.fragment.TrackListFragment;
 import by.itrex.jetfirer.mediaplayer.model.Playlist;
@@ -82,5 +84,25 @@ public class TrackListAdapter extends BaseAdapter {
         convertView.setOnClickListener(context);
 
         return convertView;
+    }
+
+    public int getTrackPosition(Track track) {
+        List<Track> tracks = playlist.getTracks();
+        for (int i = 0; i < tracks.size(); i++) {
+            Track t = tracks.get(i);
+            if (t.equals(track)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public int getCurrentTrackPosition() {
+        MediaPlayerService mediaPlayerService = MediaPlayerService.getInstance();
+        if (mediaPlayerService != null) {
+            return getTrackPosition(mediaPlayerService.getCurrentTrack());
+        }
+
+        return -1;
     }
 }

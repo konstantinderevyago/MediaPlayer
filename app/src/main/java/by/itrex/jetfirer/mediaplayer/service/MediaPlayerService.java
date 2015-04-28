@@ -16,19 +16,21 @@ import by.itrex.jetfirer.mediaplayer.model.Track;
 /**
  * Created by Konstantin on 25.04.2015.
  */
-public class MediaPlayerService extends Service implements MediaPlayer.OnCompletionListener{
+public class MediaPlayerService extends Service implements MediaPlayer.OnCompletionListener, MediaPlayer.OnPreparedListener {
 
     private static MediaPlayer mediaPlayer = new MediaPlayer();
 
     private Repeat repeat = Repeat.REPEAT_OFF;
     private boolean random = false;
 
+    private boolean isPlayOn = false;
+
     private Track currentTrack;
     private Playlist playlist;
     private Stack<Track> previousTracks;
     private Stack<Track> nextTracks;
 
-    private TrackCompletedListener trackComplitedListener;
+    private TrackCompletedListener trackCompletedListener;
 
     private static MediaPlayerService mediaPlayerService = new MediaPlayerService();
 
@@ -39,6 +41,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
     private MediaPlayerService() {
         mediaPlayer = new MediaPlayer();
         mediaPlayer.setOnCompletionListener(this);
+        mediaPlayer.setOnPreparedListener(this);
 
         previousTracks = new Stack<>();
         nextTracks = new Stack<>();
@@ -60,21 +63,28 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
 
                 if (mediaPlayer == null) {
                     mediaPlayer = MediaPlayer.create(this, track.getData());
+                    mediaPlayer.setOnCompletionListener(this);
+                    mediaPlayer.setOnPreparedListener(this);
                 } else {
                     mediaPlayer.reset();
                     mediaPlayer.setDataSource(this, track.getData());
-                    mediaPlayer.prepare();
+//                    mediaPlayer.prepare();
                 }
             }
-        } catch (Exception ignored) {
-
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
     public void startTrack() {
         if (mediaPlayer != null && currentTrack != null) {
-            setTrack(currentTrack);
-            mediaPlayer.start();
+            try {
+                mediaPlayer.prepare();
+            } catch (Exception e) {
+                mediaPlayer.start();
+            }
+
+            isPlayOn = true;
         }
     }
 
@@ -87,12 +97,16 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
         if (mediaPlayer != null) {
             mediaPlayer.stop();
             setTrack(currentTrack);
+
+            isPlayOn = false;
         }
     }
 
     public void pauseTrack() {
         if (mediaPlayer != null && mediaPlayer.isPlaying()) {
             mediaPlayer.pause();
+
+            isPlayOn = false;
         }
     }
 
@@ -112,7 +126,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
     public Track nextTrack() {
         Track track = getNextTrack();
         if (track != null) {
-            if (isPlaying()) {
+            if (isPlaying() || isPlayOn) {
                 startTrack(track);
             } else {
                 setTrack(track);
@@ -137,6 +151,8 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
             if (repeat == Repeat.REPEAT_SINGLE) {
                 return currentTrack;
             }
+
+            nextTracks.add(currentTrack);
 
             if (random) {
                 if (!previousTracks.isEmpty()) {
@@ -169,6 +185,8 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
             if (repeat == Repeat.REPEAT_SINGLE) {
                 return currentTrack;
             }
+
+            previousTracks.add(currentTrack);
 
             if (random) {
                 if (!nextTracks.isEmpty()) {
@@ -271,16 +289,27 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
         this.nextTracks = nextTracks;
     }
 
-    public void setTrackComplitedListener(TrackCompletedListener trackComplitedListener) {
-        this.trackComplitedListener = trackComplitedListener;
+    public void setTrackCompletedListener(TrackCompletedListener trackCompletedListener) {
+        this.trackCompletedListener = trackCompletedListener;
     }
 
     @Override
     public void onCompletion(MediaPlayer mp) {
-        nextTrack();
+        if (mp.getCurrentPosition() >= 1000) {
+            nextTrack();
+        }
 
-        if (trackComplitedListener != null) {
-            trackComplitedListener.trackCompleted();
+        if (trackCompletedListener != null) {
+            trackCompletedListener.trackCompleted();
+        }
+    }
+
+    @Override
+    public void onPrepared(MediaPlayer mp) {
+        mp.start();
+
+        if (trackCompletedListener != null) {
+            trackCompletedListener.trackCompleted();
         }
     }
 }

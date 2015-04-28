@@ -12,6 +12,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import by.itrex.jetfirer.mediaplayer.R;
+import by.itrex.jetfirer.mediaplayer.activity.MediaPlayerActivity;
 import by.itrex.jetfirer.mediaplayer.enums.Repeat;
 import by.itrex.jetfirer.mediaplayer.model.Playlist;
 import by.itrex.jetfirer.mediaplayer.model.Track;
@@ -74,6 +75,7 @@ public class MediaPlayerController extends Fragment implements View.OnClickListe
 
     private void initMediaPlayerService() {
         mediaPlayerService = MediaPlayerService.getInstance();
+        mediaPlayerService.setTrackCompletedListener(this);
 
         if (!mediaPlayerService.isPlaying()) {
             getActivity().startService(new Intent(getActivity(), MediaPlayerService.class));
@@ -86,10 +88,25 @@ public class MediaPlayerController extends Fragment implements View.OnClickListe
             showPlayingTrackInfo(track);
         }
 
-        if (mediaPlayerService.isRandom()) {
+        setRandom(Utils.getRandom(getActivity()));
+        setRepeat(mediaPlayerService.getRepeat());
+    }
+
+    private void setRandom(boolean random) {
+        if (random) {
             randomButton.setImageResource(R.drawable.random_button_pressed);
+        } else {
+            randomButton.setImageResource(R.drawable.random_button);
         }
-        switch (mediaPlayerService.getRepeat()) {
+        mediaPlayerService.setRandom(random);
+        Utils.saveRandom(getActivity(), random);
+    }
+
+    private void setRepeat(Repeat repeat) {
+        switch (repeat) {
+            case REPEAT_OFF:
+                repeatButton.setImageResource(R.drawable.repeat_button);
+                break;
             case REPEAT_ALL:
                 repeatButton.setImageResource(R.drawable.repeat_button_pressed);
                 break;
@@ -97,6 +114,8 @@ public class MediaPlayerController extends Fragment implements View.OnClickListe
                 repeatButton.setImageResource(R.drawable.repeat_button_single_pressed);
                 break;
         }
+        mediaPlayerService.setRepeat(repeat);
+        Utils.saveRepeat(getActivity(), repeat);
     }
 
     @Override
@@ -141,31 +160,24 @@ public class MediaPlayerController extends Fragment implements View.OnClickListe
     }
 
     private void onRandomPressed() {
-        boolean random = mediaPlayerService.isRandom();
-        if (random) {
-            randomButton.setImageResource(R.drawable.random_button);
-        } else {
-            randomButton.setImageResource(R.drawable.random_button_pressed);
-        }
-        mediaPlayerService.setRandom(!random);
+        boolean random = Utils.getRandom(getActivity());
+        setRandom(!random);
     }
 
     private void onRepeatPressed() {
         Repeat repeat = mediaPlayerService.getRepeat();
         switch (repeat) {
             case REPEAT_OFF:
-                repeatButton.setImageResource(R.drawable.repeat_button_pressed);
-                mediaPlayerService.setRepeat(Repeat.REPEAT_ALL);
+                repeat = Repeat.REPEAT_ALL;
                 break;
             case REPEAT_ALL:
-                repeatButton.setImageResource(R.drawable.repeat_button_single_pressed);
-                mediaPlayerService.setRepeat(Repeat.REPEAT_SINGLE);
+                repeat = Repeat.REPEAT_SINGLE;
                 break;
             case REPEAT_SINGLE:
-                repeatButton.setImageResource(R.drawable.repeat_button);
-                mediaPlayerService.setRepeat(Repeat.REPEAT_OFF);
+                repeat = Repeat.REPEAT_OFF;
                 break;
         }
+        setRepeat(repeat);
     }
 
     private void onPlayPressed() {
@@ -201,6 +213,8 @@ public class MediaPlayerController extends Fragment implements View.OnClickListe
             showPlayingTrackInfo(track);
             durationProgress.setProgress(0);
             seekBarHandleExecute();
+
+            ((MediaPlayerActivity) getActivity()).notifyCurrentList();
         }
     }
 
@@ -214,9 +228,15 @@ public class MediaPlayerController extends Fragment implements View.OnClickListe
         if (track != null) {
             playingTitle.setText(track.getTitle());
             playingArtist.setText(track.getArtist());
-            playingDuration.setText(getString(R.string.track_duration_zero));
+            playingDuration.setText(Utils.convertDuration(mediaPlayerService.getCurrentPosition()));
             maxDuration.setText(Utils.convertDuration(track.getDuration()));
             durationProgress.setMax(track.getDuration());
+        } else {
+            playingTitle.setText("");
+            playingArtist.setText("");
+            playingDuration.setText(getString(R.string.track_duration_zero));
+            maxDuration.setText(getString(R.string.track_duration_zero));
+            durationProgress.setProgress(0);
         }
     }
 
@@ -241,7 +261,7 @@ public class MediaPlayerController extends Fragment implements View.OnClickListe
 
     @Override
     public void trackCompleted() {
-        onNextPressed();
+        initTrack(mediaPlayerService.getCurrentTrack());
     }
 
     public class SeekBarHandler extends AsyncTask<Void, Void, Void> {

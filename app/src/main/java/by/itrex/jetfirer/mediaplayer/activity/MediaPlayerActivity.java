@@ -34,4 +34,8 @@ public class MediaPlayerActivity extends FragmentActivity {
         mediaPlayerController.initPlaylist(playlist, track);
     }
 
+    public void notifyCurrentList() {
+        playlistPagerAdapter.notifyCurrentList(playlistViewPager.getCurrentItem());
+    }
+
 }

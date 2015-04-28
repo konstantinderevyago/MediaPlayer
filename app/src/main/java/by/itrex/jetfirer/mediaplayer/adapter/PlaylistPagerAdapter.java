@@ -51,6 +51,11 @@ public class PlaylistPagerAdapter extends FragmentPagerAdapter {
         return list.get(list.size() - 1).getName();
     }
 
+    public void notifyCurrentList(int position) {
+        List<TrackListFragment> list = trackListFragments.get(position);
+        list.get(list.size() - 1).notifyDataSetChanged();
+    }
+
     private Playlist getDefaultPlaylist() {
         Playlist playlist = new Playlist();
         playlist.setId((long) -1);

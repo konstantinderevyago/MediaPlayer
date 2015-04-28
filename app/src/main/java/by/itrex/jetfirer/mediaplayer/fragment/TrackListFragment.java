@@ -57,6 +57,17 @@ public class TrackListFragment extends Fragment implements View.OnClickListener 
         return null;
     }
 
+    public void notifyDataSetChanged() {
+        if (trackListAdapter != null) {
+            trackListAdapter.notifyDataSetChanged();
+
+            int position = trackListAdapter.getCurrentTrackPosition();
+            if (position != -1) {
+                trackList.smoothScrollToPosition(position);
+            }
+        }
+    }
+
     public Playlist getPlaylist() {
         return playlist;
     }

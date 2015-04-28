@@ -5,6 +5,14 @@ package by.itrex.jetfirer.mediaplayer.enums;
  */
 public enum Repeat {
 
-    REPEAT_OFF, REPEAT_ALL, REPEAT_SINGLE
+    REPEAT_OFF, REPEAT_ALL, REPEAT_SINGLE;
+
+    public static Repeat toRepeat(String repeatString) {
+        try {
+            return valueOf(repeatString);
+        } catch (Exception ex) {
+            return REPEAT_OFF;
+        }
+    }
 
 }
