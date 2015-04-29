@@ -9,6 +9,9 @@
         android:layout_height="wrap_content"
         android:id="@+id/track_list"
         android:divider="@color/white"
-        android:dividerHeight="1px"/>
+        android:dividerHeight="1px"
+        android:layout_marginLeft="@dimen/track_list_margin"
+        android:layout_marginRight="@dimen/track_list_margin"
+        android:layout_marginBottom="@dimen/track_list_margin"/>
 
 </LinearLayout>

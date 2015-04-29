@@ -28,6 +28,14 @@ public class MediaPlayerActivity extends FragmentActivity {
         playlistViewPager = (ViewPager) findViewById(R.id.playlist_view_pager);
         playlistPagerAdapter = new PlaylistPagerAdapter(getSupportFragmentManager(), this);
         playlistViewPager.setAdapter(playlistPagerAdapter);
+        playlistViewPager.setOffscreenPageLimit(playlistPagerAdapter.getCount());
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (!playlistPagerAdapter.closePlaylist(playlistViewPager.getCurrentItem())) {
+            super.onBackPressed();
+        }
     }
 
     public void startTrack(Playlist playlist, Track track) {
@@ -36,6 +44,10 @@ public class MediaPlayerActivity extends FragmentActivity {
 
     public void notifyCurrentList() {
         playlistPagerAdapter.notifyCurrentList(playlistViewPager.getCurrentItem());
+    }
+
+    public void openPlaylist(Playlist playlist) {
+        playlistPagerAdapter.openPlaylist(playlistViewPager.getCurrentItem(), playlist);
     }
 
 }

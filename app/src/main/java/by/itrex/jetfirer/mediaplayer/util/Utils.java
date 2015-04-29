@@ -11,7 +11,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import by.itrex.jetfirer.mediaplayer.R;
 import by.itrex.jetfirer.mediaplayer.enums.Repeat;
+import by.itrex.jetfirer.mediaplayer.model.Playlist;
 import by.itrex.jetfirer.mediaplayer.model.Track;
 
 /**
@@ -39,6 +41,22 @@ public class Utils {
         return durationBuilder.toString();
     }
 
+    public static Long stringToLong(String str) {
+        long value = 0;
+
+        if (str != null) {
+            byte[] bytes = str.getBytes();
+            for (byte aByte : bytes) {
+                value += (value << 8) + (aByte & 0xff);
+            }
+            if (value < 0) {
+                value *= -1;
+            }
+        }
+
+        return value;
+    }
+
     public static List<Track> getAllTracks(Context context) {
         List<Track> tracks = new ArrayList<>();
 
@@ -64,16 +82,148 @@ public class Utils {
                 Uri data = Uri.parse(dataStr);
                 int duration = cursor.getInt(durationColumn);
 
-                Track track = new Track(id, artist, title, album, data, duration);
+                Track track = new Track(id, title, artist, album, data, duration);
                 tracks.add(track);
             } while (cursor.moveToNext());
         }
 
-        cursor.close();
+        if (cursor != null) {
+            cursor.close();
+        }
 
         Collections.sort(tracks);
 
         return tracks;
+    }
+
+    public static Playlist getDefaultPlaylist(Context context) {
+        Playlist playlist = new Playlist();
+        playlist.setId((long) -1);
+        playlist.setName(context.getString(R.string.all_tracks));
+        playlist.setTracks(Utils.getAllTracks(context));
+        return  playlist;
+    }
+
+    public static List<Playlist> getArtists(Context context) {
+        List<Playlist> playlists = new ArrayList<>();
+
+        Playlist defaultPlaylist = getDefaultPlaylist(context);
+        for (Track track : defaultPlaylist.getTracks()) {
+            boolean exist = false;
+            for (Playlist playlist : playlists) {
+                if (playlist.getName().equals(track.getArtist())) {
+                    playlist.getTracks().add(track);
+                    exist = true;
+                    break;
+                }
+            }
+            if (!exist) {
+                Playlist playlist = new Playlist();
+                playlist.setName(track.getArtist());
+                List<Track> tracks = new ArrayList<>();
+                tracks.add(track);
+                playlist.setTracks(tracks);
+                playlist.setId(stringToLong(playlist.getName()));
+
+                playlists.add(playlist);
+            }
+        }
+
+        return playlists;
+    }
+
+    public static List<Playlist> getAlbums(Context context) {
+        List<Playlist> playlists = new ArrayList<>();
+
+        Playlist defaultPlaylist = getDefaultPlaylist(context);
+        for (Track track : defaultPlaylist.getTracks()) {
+            boolean exist = false;
+            for (Playlist playlist : playlists) {
+                if (playlist.getName().equals(track.getAlbum()) && playlist.getTracks().get(0).getArtist().equals(track.getArtist())) {
+                    playlist.getTracks().add(track);
+                    exist = true;
+                    break;
+                }
+            }
+            if (!exist) {
+                Playlist playlist = new Playlist();
+                playlist.setName(track.getAlbum());
+                List<Track> tracks = new ArrayList<>();
+                tracks.add(track);
+                playlist.setTracks(tracks);
+                playlist.setId(stringToLong(playlist.getName()));
+
+                playlists.add(playlist);
+            }
+        }
+
+        return playlists;
+    }
+
+    public static List<Playlist> getFolders(Context context) {
+        List<Playlist> playlists = new ArrayList<>();
+
+        Playlist defaultPlaylist = getDefaultPlaylist(context);
+        for (Track track : defaultPlaylist.getTracks()) {
+            String data = track.getData().getPath();
+            String[] folders = data.split("/");
+            StringBuilder pathBuilder = new StringBuilder();
+            for (int i = 1; i < folders.length - 1; i++) {
+                String folder = folders[i];
+                pathBuilder.append("/").append(folder);
+                String path = pathBuilder.toString();
+
+                boolean exist = false;
+                for (Playlist playlist : playlists) {
+                    if (path.equals(playlist.getName())) {
+                        exist = true;
+                        playlist.getTracks().add(track);
+                        break;
+                    }
+                }
+                if (!exist) {
+                    Playlist playlist = new Playlist();
+                    playlist.setName(path);
+                    List<Track> tracks = new ArrayList<>();
+                    tracks.add(track);
+                    playlist.setTracks(tracks);
+                    playlist.setId(stringToLong(path));
+
+                    playlists.add(playlist);
+                }
+            }
+        }
+
+        List<Playlist> forRemove = new ArrayList<>();
+        for (Playlist playlist : playlists) {
+
+            String data = playlist.getName();
+            String[] names = data.split("/");
+            StringBuilder pathBuilder = new StringBuilder();
+            for (int i = 1; i < names.length - 1; i++) {
+                pathBuilder.append("/").append(names[i]);
+            }
+            String path = pathBuilder.toString();
+
+            for (Playlist p : playlists) {
+                if (path.equals(p.getName()) && playlist.getTracks().equals(p.getTracks())) {
+                    forRemove.add(p);
+                }
+            }
+        }
+
+        playlists.removeAll(forRemove);
+
+        for (Playlist playlist : playlists) {
+            String folder = playlist.getName();
+            String[] folders = folder.split("/");
+            if (folders.length > 0) {
+                folder = "/" + folders[folders.length - 1];
+            }
+            playlist.setName(folder);
+        }
+
+        return playlists;
     }
 
     private static SharedPreferences.Editor getEditor(Context context) {

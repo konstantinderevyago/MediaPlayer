@@ -4,7 +4,6 @@ import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import java.util.List;
@@ -12,43 +11,29 @@ import java.util.List;
 import by.itrex.jetfirer.mediaplayer.R;
 import by.itrex.jetfirer.mediaplayer.fragment.TrackListFragment;
 import by.itrex.jetfirer.mediaplayer.model.Playlist;
-import by.itrex.jetfirer.mediaplayer.model.Track;
 import by.itrex.jetfirer.mediaplayer.service.MediaPlayerService;
-import by.itrex.jetfirer.mediaplayer.util.Utils;
 
 /**
- * Created by Konstantin on 27.04.2015.
+ * Created by Konstantin on 29.04.2015.
  */
-public class TrackListAdapter extends BaseAdapter {
+public class PlaylistAdapter extends TrackListAdapter {
 
-    protected LayoutInflater layoutInflater;
-    protected TrackListFragment context;
+    private List<Playlist> playlists;
 
-    private Playlist playlist;
-
-    protected TrackListAdapter() {
-
-    }
-
-    public TrackListAdapter(LayoutInflater layoutInflater, TrackListFragment context, Playlist playlist) {
+    public PlaylistAdapter(LayoutInflater layoutInflater, TrackListFragment context, List<Playlist> playlists) {
         this.layoutInflater = layoutInflater;
         this.context = context;
-        this.playlist = playlist;
+        this.playlists = playlists;
     }
 
     @Override
     public int getCount() {
-        return playlist.getTracks().size();
+        return playlists.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return playlist.getTracks().get(position);
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return position;
+        return playlists.get(position);
     }
 
     @Override
@@ -61,15 +46,21 @@ public class TrackListAdapter extends BaseAdapter {
         TextView artist = (TextView) convertView.findViewById(R.id.artist);
         TextView duration = (TextView) convertView.findViewById(R.id.duration);
 
-        Track track = (Track) getItem(position);
-        if (track != null) {
-            title.setText(track.getTitle());
-            artist.setText(track.getArtist());
-            duration.setText(Utils.convertDuration(track.getDuration()));
+        Playlist playlist = (Playlist) getItem(position);
+        if (playlist != null) {
+            title.setText(playlist.getName());
+
+            int tracksCount = playlist.getTracks().size();
+            String tracksCountStr = tracksCount + " track";
+            if (tracksCount > 1) {
+                tracksCountStr = tracksCountStr + "s";
+            }
+            artist.setText(tracksCountStr);
+            duration.setText("");
 
             MediaPlayerService mediaPlayerService = MediaPlayerService.getInstance();
             if (mediaPlayerService != null) {
-                if (!track.equals(mediaPlayerService.getCurrentTrack())) {
+                if (!playlist.equals(mediaPlayerService.getPlaylist())) {
                     title.setTextColor(Color.WHITE);
                     artist.setTextColor(Color.WHITE);
                     duration.setTextColor(Color.WHITE);
@@ -82,18 +73,17 @@ public class TrackListAdapter extends BaseAdapter {
             }
         }
 
-        convertView.setTag(track);
+        convertView.setTag(playlist);
 
         convertView.setOnClickListener(context);
 
         return convertView;
     }
 
-    private int getItemPosition(Track track) {
-        List<Track> tracks = playlist.getTracks();
-        for (int i = 0; i < tracks.size(); i++) {
-            Track t = tracks.get(i);
-            if (t.equals(track)) {
+    private int getItemPosition(Playlist playlist) {
+        for (int i = 0; i < playlists.size(); i++) {
+            Playlist p = playlists.get(i);
+            if (p.equals(playlist)) {
                 return i;
             }
         }
@@ -103,7 +93,7 @@ public class TrackListAdapter extends BaseAdapter {
     public int getCurrentItemPosition() {
         MediaPlayerService mediaPlayerService = MediaPlayerService.getInstance();
         if (mediaPlayerService != null) {
-            return getItemPosition(mediaPlayerService.getCurrentTrack());
+            return getItemPosition(mediaPlayerService.getPlaylist());
         }
 
         return -1;

@@ -89,7 +89,7 @@ public class MediaPlayerController extends Fragment implements View.OnClickListe
         }
 
         setRandom(Utils.getRandom(getActivity()));
-        setRepeat(mediaPlayerService.getRepeat());
+        setRepeat(Utils.getRepeat(getActivity()));
     }
 
     private void setRandom(boolean random) {
@@ -165,7 +165,7 @@ public class MediaPlayerController extends Fragment implements View.OnClickListe
     }
 
     private void onRepeatPressed() {
-        Repeat repeat = mediaPlayerService.getRepeat();
+        Repeat repeat = Utils.getRepeat(getActivity());
         switch (repeat) {
             case REPEAT_OFF:
                 repeat = Repeat.REPEAT_ALL;

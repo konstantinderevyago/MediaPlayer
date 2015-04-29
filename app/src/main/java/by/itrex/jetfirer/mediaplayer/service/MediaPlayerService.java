@@ -234,13 +234,6 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
         return track;
     }
 
-    public void setOnCompletionListener(MediaPlayer.OnCompletionListener onCompletionListener) {
-        if (mediaPlayer == null) {
-            mediaPlayer = new MediaPlayer();
-        }
-        mediaPlayer.setOnCompletionListener(onCompletionListener);
-    }
-
     public Repeat getRepeat() {
         return repeat;
     }

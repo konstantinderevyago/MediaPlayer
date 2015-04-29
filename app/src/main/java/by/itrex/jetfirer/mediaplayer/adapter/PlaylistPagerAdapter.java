@@ -3,12 +3,12 @@ package by.itrex.jetfirer.mediaplayer.adapter;
 import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import by.itrex.jetfirer.mediaplayer.R;
+import by.itrex.jetfirer.mediaplayer.fragment.PlaylistFragment;
 import by.itrex.jetfirer.mediaplayer.fragment.TrackListFragment;
 import by.itrex.jetfirer.mediaplayer.model.Playlist;
 import by.itrex.jetfirer.mediaplayer.util.Utils;
@@ -16,7 +16,7 @@ import by.itrex.jetfirer.mediaplayer.util.Utils;
 /**
  * Created by Konstantin on 27.04.2015.
  */
-public class PlaylistPagerAdapter extends FragmentPagerAdapter {
+public class PlaylistPagerAdapter extends FragmentStatePagerAdapter {
 
     private FragmentManager fragmentManager;
     private Context context;
@@ -29,9 +29,22 @@ public class PlaylistPagerAdapter extends FragmentPagerAdapter {
         this.context = context;
 
         trackListFragments = new ArrayList<>();
-        List<TrackListFragment> list = new ArrayList<>();
-        list.add(TrackListFragment.getInstance(getDefaultPlaylist()));
-        trackListFragments.add(list);
+
+        List<TrackListFragment> defaultPlaylist = new ArrayList<>();
+        defaultPlaylist.add(TrackListFragment.getInstance(Utils.getDefaultPlaylist(context)));
+        trackListFragments.add(defaultPlaylist);
+
+        List<TrackListFragment> folders = new ArrayList<>();
+        folders.add(PlaylistFragment.getInstance(Utils.getFolders(context), PlaylistFragment.FOLDER_FRAGMENT_NAME));
+        trackListFragments.add(folders);
+
+        List<TrackListFragment> artists = new ArrayList<>();
+        artists.add(PlaylistFragment.getInstance(Utils.getArtists(context), PlaylistFragment.ARTIST_FRAGMENT_NAME));
+        trackListFragments.add(artists);
+
+        List<TrackListFragment> albums = new ArrayList<>();
+        albums.add(PlaylistFragment.getInstance(Utils.getAlbums(context), PlaylistFragment.ALBUM_FRAGMENT_NAME));
+        trackListFragments.add(albums);
     }
 
     @Override
@@ -46,9 +59,13 @@ public class PlaylistPagerAdapter extends FragmentPagerAdapter {
     }
 
     @Override
+    public int getItemPosition(Object object) {
+        return POSITION_NONE;
+    }
+
+    @Override
     public CharSequence getPageTitle(int position) {
-        List<TrackListFragment> list = trackListFragments.get(position);
-        return list.get(list.size() - 1).getName();
+        return ((TrackListFragment) getItem(position)).getName();
     }
 
     public void notifyCurrentList(int position) {
@@ -56,11 +73,19 @@ public class PlaylistPagerAdapter extends FragmentPagerAdapter {
         list.get(list.size() - 1).notifyDataSetChanged();
     }
 
-    private Playlist getDefaultPlaylist() {
-        Playlist playlist = new Playlist();
-        playlist.setId((long) -1);
-        playlist.setName(context.getString(R.string.all_tracks));
-        playlist.setTracks(Utils.getAllTracks(context));
-        return  playlist;
+    public void openPlaylist(int position, Playlist playlist) {
+        TrackListFragment trackListFragment = TrackListFragment.getInstance(playlist);
+        trackListFragments.get(position).add(trackListFragment);
+        notifyDataSetChanged();
+    }
+
+    public boolean closePlaylist(int position) {
+        List<TrackListFragment> list = trackListFragments.get(position);
+        if (list.size() > 1) {
+            list.remove(list.size() - 1);
+            notifyDataSetChanged();
+            return true;
+        }
+        return false;
     }
 }

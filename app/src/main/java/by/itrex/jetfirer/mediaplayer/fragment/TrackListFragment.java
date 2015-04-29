@@ -18,8 +18,8 @@ import by.itrex.jetfirer.mediaplayer.model.Track;
  */
 public class TrackListFragment extends Fragment implements View.OnClickListener {
 
-    private ListView trackList;
-    private TrackListAdapter trackListAdapter;
+    protected ListView trackList;
+    protected TrackListAdapter trackListAdapter;
 
     private Playlist playlist;
 
@@ -61,18 +61,14 @@ public class TrackListFragment extends Fragment implements View.OnClickListener 
         if (trackListAdapter != null) {
             trackListAdapter.notifyDataSetChanged();
 
-            int position = trackListAdapter.getCurrentTrackPosition();
+            int position = trackListAdapter.getCurrentItemPosition();
             if (position != -1) {
                 trackList.smoothScrollToPosition(position);
             }
         }
     }
 
-    public Playlist getPlaylist() {
-        return playlist;
-    }
-
-    public void setPlaylist(Playlist playlist) {
+    private void setPlaylist(Playlist playlist) {
         this.playlist = playlist;
     }
 }
