@@ -98,4 +98,12 @@ public class PlaylistAdapter extends TrackListAdapter {
 
         return -1;
     }
+
+    public List<Playlist> getPlaylists() {
+        return playlists;
+    }
+
+    public void setPlaylists(List<Playlist> playlists) {
+        this.playlists = playlists;
+    }
 }

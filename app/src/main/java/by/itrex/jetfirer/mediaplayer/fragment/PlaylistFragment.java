@@ -12,6 +12,7 @@ import java.util.List;
 import by.itrex.jetfirer.mediaplayer.R;
 import by.itrex.jetfirer.mediaplayer.activity.MediaPlayerActivity;
 import by.itrex.jetfirer.mediaplayer.adapter.PlaylistAdapter;
+import by.itrex.jetfirer.mediaplayer.database.DataProvider;
 import by.itrex.jetfirer.mediaplayer.model.Playlist;
 
 /**
@@ -62,6 +63,17 @@ public class PlaylistFragment extends TrackListFragment {
         Playlist playlist = (Playlist) v.getTag();
 
         ((MediaPlayerActivity) getActivity()).openPlaylist(playlist);
+    }
+
+    @Override
+    public void notifyDataSetChanged() {
+        super.notifyDataSetChanged();
+
+        if (PLAYLIST_FRAGMENT_NAME.equals(name)) {
+            playlists = DataProvider.getAllPlaylists();
+            ((PlaylistAdapter) trackListAdapter).setPlaylists(playlists);
+            trackListAdapter.notifyDataSetChanged();
+        }
     }
 
     public String getName() {

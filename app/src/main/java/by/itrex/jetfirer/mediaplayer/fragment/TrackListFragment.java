@@ -49,6 +49,14 @@ public class TrackListFragment extends Fragment implements View.OnClickListener 
         trackListAdapter.notifyDataSetChanged();
     }
 
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) {
+            notifyDataSetChanged();
+        }
+    }
+
     public String getName() {
         if (playlist != null) {
             return playlist.getName();

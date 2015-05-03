@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
+import by.itrex.jetfirer.mediaplayer.database.DataProvider;
 import by.itrex.jetfirer.mediaplayer.fragment.PlaylistFragment;
 import by.itrex.jetfirer.mediaplayer.fragment.TrackListFragment;
 import by.itrex.jetfirer.mediaplayer.model.Playlist;
@@ -33,6 +34,10 @@ public class PlaylistPagerAdapter extends FragmentStatePagerAdapter {
         List<TrackListFragment> defaultPlaylist = new ArrayList<>();
         defaultPlaylist.add(TrackListFragment.getInstance(Utils.getDefaultPlaylist(context)));
         trackListFragments.add(defaultPlaylist);
+
+        List<TrackListFragment> playlists = new ArrayList<>();
+        playlists.add(PlaylistFragment.getInstance(DataProvider.getAllPlaylists(), PlaylistFragment.PLAYLIST_FRAGMENT_NAME));
+        trackListFragments.add(playlists);
 
         List<TrackListFragment> folders = new ArrayList<>();
         folders.add(PlaylistFragment.getInstance(Utils.getFolders(context), PlaylistFragment.FOLDER_FRAGMENT_NAME));
@@ -69,8 +74,7 @@ public class PlaylistPagerAdapter extends FragmentStatePagerAdapter {
     }
 
     public void notifyCurrentList(int position) {
-        List<TrackListFragment> list = trackListFragments.get(position);
-        list.get(list.size() - 1).notifyDataSetChanged();
+        ((TrackListFragment) getItem(position)).notifyDataSetChanged();
     }
 
     public void openPlaylist(int position, Playlist playlist) {
