@@ -108,4 +108,12 @@ public class TrackListAdapter extends BaseAdapter {
 
         return -1;
     }
+
+    public Playlist getPlaylist() {
+        return playlist;
+    }
+
+    public void setPlaylist(Playlist playlist) {
+        this.playlist = playlist;
+    }
 }

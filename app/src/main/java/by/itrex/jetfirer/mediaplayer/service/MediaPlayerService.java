@@ -2,6 +2,7 @@ package by.itrex.jetfirer.mediaplayer.service;
 
 import android.app.Service;
 import android.content.Intent;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.IBinder;
 
@@ -40,6 +41,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
 
     private MediaPlayerService() {
         mediaPlayer = new MediaPlayer();
+        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         mediaPlayer.setOnCompletionListener(this);
         mediaPlayer.setOnPreparedListener(this);
 
@@ -63,6 +65,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
 
                 if (mediaPlayer == null) {
                     mediaPlayer = MediaPlayer.create(this, track.getData());
+                    mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
                     mediaPlayer.setOnCompletionListener(this);
                     mediaPlayer.setOnPreparedListener(this);
                 } else {

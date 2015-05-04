@@ -11,13 +11,22 @@ import java.util.List;
 import by.itrex.jetfirer.mediaplayer.database.DataProvider;
 import by.itrex.jetfirer.mediaplayer.fragment.PlaylistFragment;
 import by.itrex.jetfirer.mediaplayer.fragment.TrackListFragment;
+import by.itrex.jetfirer.mediaplayer.fragment.VkFragment;
 import by.itrex.jetfirer.mediaplayer.model.Playlist;
+import by.itrex.jetfirer.mediaplayer.model.Track;
 import by.itrex.jetfirer.mediaplayer.util.Utils;
 
 /**
  * Created by Konstantin on 27.04.2015.
  */
 public class PlaylistPagerAdapter extends FragmentStatePagerAdapter {
+
+    public static int DEFAULT_PLAYLIST_POSITION = 0;
+    public static int PLAYLISTs_POSITION = 1;
+    public static int FOLDERS_POSITION = 2;
+    public static int ARTISTS_POSITION = 3;
+    public static int ALBUMS_POSITION = 4;
+    public static int VK_POSITION = 5;
 
     private FragmentManager fragmentManager;
     private Context context;
@@ -50,6 +59,10 @@ public class PlaylistPagerAdapter extends FragmentStatePagerAdapter {
         List<TrackListFragment> albums = new ArrayList<>();
         albums.add(PlaylistFragment.getInstance(Utils.getAlbums(context), PlaylistFragment.ALBUM_FRAGMENT_NAME));
         trackListFragments.add(albums);
+
+        List<TrackListFragment> vk = new ArrayList<>();
+        vk.add(VkFragment.getInstance(new Playlist(-1, PlaylistFragment.VK_FRAGMENT_NAME, new ArrayList<Track>())));
+        trackListFragments.add(vk);
     }
 
     @Override

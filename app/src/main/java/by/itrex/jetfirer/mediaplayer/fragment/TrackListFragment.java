@@ -76,7 +76,7 @@ public class TrackListFragment extends Fragment implements View.OnClickListener 
         }
     }
 
-    private void setPlaylist(Playlist playlist) {
+    public void setPlaylist(Playlist playlist) {
         this.playlist = playlist;
     }
 }

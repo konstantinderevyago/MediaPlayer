@@ -23,6 +23,7 @@ public class Utils {
 
     public static final String RANDOM = "RANDOM";
     public static final String REPEAT = "REPEAT";
+    public static final String VK_TOKEN_KEY = "VK_SDK_ACCESS_TOKEN_PLEASE_DONT_TOUCH";
 
     public static String convertDuration(int value) {
         value /= 1000;
@@ -261,6 +262,15 @@ public class Utils {
 
         if (editor != null) {
             editor.putString(REPEAT, repeat.toString());
+            editor.apply();
+        }
+    }
+
+    public static void clearVkAuthToken(Context context) {
+        SharedPreferences.Editor editor = getEditor(context);
+
+        if (editor != null) {
+            editor.remove(VK_TOKEN_KEY);
             editor.apply();
         }
     }
