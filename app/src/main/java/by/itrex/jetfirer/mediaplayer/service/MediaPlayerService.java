@@ -64,13 +64,16 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
                 currentTrack = track;
 
                 if (mediaPlayer == null) {
-                    mediaPlayer = MediaPlayer.create(this, track.getData());
+//                    mediaPlayer = MediaPlayer.create(this, track.getData());
+                    mediaPlayer = new MediaPlayer();
+                    mediaPlayer.setDataSource(track.getData());
                     mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
                     mediaPlayer.setOnCompletionListener(this);
                     mediaPlayer.setOnPreparedListener(this);
                 } else {
                     mediaPlayer.reset();
-                    mediaPlayer.setDataSource(this, track.getData());
+//                    mediaPlayer.setDataSource(this, track.getData());
+                    mediaPlayer.setDataSource(track.getData());
 //                    mediaPlayer.prepare();
                 }
             }
@@ -227,7 +230,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
                 } else {
                     Random r = new Random();
                     do {
-                        int position = r.nextInt(tracks.size() - 1);
+                        int position = r.nextInt(tracks.size());
                         track = tracks.get(position);
                     } while (track.equals(currentTrack));
                 }

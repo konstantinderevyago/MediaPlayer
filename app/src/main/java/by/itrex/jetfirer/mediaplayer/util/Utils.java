@@ -23,7 +23,7 @@ public class Utils {
 
     public static final String RANDOM = "RANDOM";
     public static final String REPEAT = "REPEAT";
-    public static final String VK_TOKEN_KEY = "VK_SDK_ACCESS_TOKEN_PLEASE_DONT_TOUCH";
+//    public static final String VK_TOKEN_KEY = "VK_SDK_ACCESS_TOKEN_PLEASE_DONT_TOUCH";
 
     public static String convertDuration(int value) {
         value /= 1000;
@@ -79,8 +79,7 @@ public class Utils {
                 String artist = cursor.getString(artistColumn);
                 String title = cursor.getString(titleColumn);
                 String album = cursor.getString(albumColumn);
-                String dataStr = cursor.getString(dataColumn);
-                Uri data = Uri.parse(dataStr);
+                String data = cursor.getString(dataColumn);
                 int duration = cursor.getInt(durationColumn);
 
                 Track track = new Track(id, title, artist, album, data, duration);
@@ -166,7 +165,7 @@ public class Utils {
 
         Playlist defaultPlaylist = getDefaultPlaylist(context);
         for (Track track : defaultPlaylist.getTracks()) {
-            String data = track.getData().getPath();
+            String data = track.getData();
             String[] folders = data.split("/");
             StringBuilder pathBuilder = new StringBuilder();
             for (int i = 1; i < folders.length - 1; i++) {
@@ -262,15 +261,6 @@ public class Utils {
 
         if (editor != null) {
             editor.putString(REPEAT, repeat.toString());
-            editor.apply();
-        }
-    }
-
-    public static void clearVkAuthToken(Context context) {
-        SharedPreferences.Editor editor = getEditor(context);
-
-        if (editor != null) {
-            editor.remove(VK_TOKEN_KEY);
             editor.apply();
         }
     }

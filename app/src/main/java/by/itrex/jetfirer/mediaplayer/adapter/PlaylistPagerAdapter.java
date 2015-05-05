@@ -22,7 +22,7 @@ import by.itrex.jetfirer.mediaplayer.util.Utils;
 public class PlaylistPagerAdapter extends FragmentStatePagerAdapter {
 
     public static int DEFAULT_PLAYLIST_POSITION = 0;
-    public static int PLAYLISTs_POSITION = 1;
+    public static int PLAYLISTS_POSITION = 1;
     public static int FOLDERS_POSITION = 2;
     public static int ARTISTS_POSITION = 3;
     public static int ALBUMS_POSITION = 4;

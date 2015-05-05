@@ -30,6 +30,7 @@ import com.vk.sdk.util.VKUtil;
 import by.itrex.jetfirer.mediaplayer.R;
 import by.itrex.jetfirer.mediaplayer.adapter.PlaylistPagerAdapter;
 import by.itrex.jetfirer.mediaplayer.database.DataProvider;
+import by.itrex.jetfirer.mediaplayer.fragment.VkFragment;
 import by.itrex.jetfirer.mediaplayer.model.Playlist;
 import by.itrex.jetfirer.mediaplayer.model.Track;
 import by.itrex.jetfirer.mediaplayer.util.Utils;
@@ -73,7 +74,10 @@ public class MediaPlayerActivity extends FragmentActivity implements View.OnClic
         playlistViewPager.setAdapter(playlistPagerAdapter);
         playlistViewPager.setOffscreenPageLimit(playlistPagerAdapter.getCount());
 
-//        VKAccessToken token = VKAccessToken.tokenFromSharedPreferences(this, Utils.VK_TOKEN_KEY);
+        initVkSdk();
+    }
+
+    private void initVkSdk() {
         VKSdk.initialize(new VKSdkListener() {
             @Override
             public void onCaptchaError(VKError vkError) {
@@ -90,18 +94,6 @@ public class MediaPlayerActivity extends FragmentActivity implements View.OnClic
 
             }
         }, APP_ID);
-
-//        VKSdk.authorize(VKScope.AUDIO);
-//        if (VKSdk.wakeUpSession()) {
-//            VKRequest vkRequest = VKApi.audio().get();
-//            vkRequest.executeWithListener(new VKRequest.VKRequestListener() {
-//                @Override
-//                public void onComplete(VKResponse response) {
-//                    super.onComplete(response);
-//                    VkAudioArray vkAudioArray = (VkAudioArray) response.parsedModel;
-//                }
-//            });
-//        }
     }
 
     @Override
@@ -120,6 +112,7 @@ public class MediaPlayerActivity extends FragmentActivity implements View.OnClic
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         VKUIHelper.onActivityResult(this, requestCode, resultCode, data);
+        ((VkFragment) playlistPagerAdapter.getItem(PlaylistPagerAdapter.VK_POSITION)).getAudio();
     }
 
     @Override
@@ -132,11 +125,16 @@ public class MediaPlayerActivity extends FragmentActivity implements View.OnClic
     }
 
     private void addToList() {
-        DataProvider.dropData();
-        DataProvider.test();
-        DataProvider.saveOrUpdatePlaylist(Utils.getDefaultPlaylist(this));
-        notifyCurrentList();
-        DataProvider.test();
+        int position = playlistViewPager.getCurrentItem();
+        if (position == PlaylistPagerAdapter.PLAYLISTS_POSITION) {
+            DataProvider.dropData();
+//            DataProvider.test();
+            DataProvider.saveOrUpdatePlaylist(Utils.getDefaultPlaylist(this));
+            notifyCurrentList();
+//            DataProvider.test();
+        } else if (position == PlaylistPagerAdapter.VK_POSITION) {
+            ((VkFragment) playlistPagerAdapter.getItem(PlaylistPagerAdapter.VK_POSITION)).update();
+        }
     }
 
     @Override

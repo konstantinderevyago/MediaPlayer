@@ -11,14 +11,14 @@ public class Track implements Comparable<Track> {
     private String title;
     private String artist;
     private String album;
-    private Uri data;
+    private String data;
     private int duration;
 
     public Track() {
 
     }
 
-    public Track(long id, String title, String artist, String album, Uri data, int duration) {
+    public Track(long id, String title, String artist, String album, String data, int duration) {
         this.id = id;
         this.title = title;
         this.artist = artist;
@@ -59,11 +59,11 @@ public class Track implements Comparable<Track> {
         this.album = album;
     }
 
-    public Uri getData() {
+    public String getData() {
         return data;
     }
 
-    public void setData(Uri data) {
+    public void setData(String data) {
         this.data = data;
     }
 
@@ -82,11 +82,10 @@ public class Track implements Comparable<Track> {
                 ", title='" + title + '\'' +
                 ", artist='" + artist + '\'' +
                 ", album='" + album + '\'' +
-                ", data=" + data +
+                ", data='" + data + '\'' +
                 ", duration=" + duration +
                 '}';
     }
-
 
     @Override
     public int compareTo(Track track) {

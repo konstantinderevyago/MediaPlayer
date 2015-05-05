@@ -4,7 +4,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.net.Uri;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -75,7 +74,7 @@ public class DbService {
         contentValues.put(ARTIST, track.getArtist());
         contentValues.put(TITLE, track.getTitle());
         contentValues.put(ALBUM, track.getAlbum());
-        contentValues.put(DATA, track.getData().toString());
+        contentValues.put(DATA, track.getData());
         contentValues.put(DURATION, track.getDuration());
         return contentValues;
     }
@@ -116,7 +115,7 @@ public class DbService {
             String artist = cursor.getString(1);
             String title = cursor.getString(2);
             String album = cursor.getString(3);
-            Uri data = Uri.parse(cursor.getString(4));
+            String data = cursor.getString(4);
             Integer duration = cursor.getInt(5);
 
             Track track = new Track(id, title, artist, album, data, duration);
@@ -171,7 +170,7 @@ public class DbService {
             String artist = cursor.getString(1);
             String title = cursor.getString(2);
             String album = cursor.getString(3);
-            Uri data = Uri.parse(cursor.getString(4));
+            String data = cursor.getString(4);
             Integer duration = cursor.getInt(5);
 
             Track track = new Track(id, title, artist, album, data, duration);
