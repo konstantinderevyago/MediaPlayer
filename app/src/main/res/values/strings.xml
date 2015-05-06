@@ -7,4 +7,5 @@
     <string name="track_duration_zero">00:00</string>
 
     <string name="all_tracks">All tracks</string>
+    <string name="input_new_playlist_name">Input new playlist name:</string>
 </resources>

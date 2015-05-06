@@ -61,8 +61,19 @@ public class PlaylistFragment extends TrackListFragment {
     @Override
     public void onClick(View v) {
         Playlist playlist = (Playlist) v.getTag();
-
-        ((MediaPlayerActivity) getActivity()).openPlaylist(playlist);
+        switch (v.getId()) {
+            case R.id.list_item:
+                ((MediaPlayerActivity) getActivity()).openPlaylist(playlist);
+                break;
+            case R.id.check:
+                if (MediaPlayerActivity.newPlaylist.getTracks().containsAll(playlist.getTracks())) {
+                    MediaPlayerActivity.newPlaylist.getTracks().removeAll(playlist.getTracks());
+                } else {
+                    MediaPlayerActivity.newPlaylist.getTracks().addAll(playlist.getTracks());
+                }
+                trackListAdapter.notifyDataSetChanged();
+                break;
+        }
     }
 
     @Override

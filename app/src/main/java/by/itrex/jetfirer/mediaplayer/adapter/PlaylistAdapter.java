@@ -1,14 +1,17 @@
 package by.itrex.jetfirer.mediaplayer.adapter;
 
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import java.util.List;
 
 import by.itrex.jetfirer.mediaplayer.R;
+import by.itrex.jetfirer.mediaplayer.activity.MediaPlayerActivity;
 import by.itrex.jetfirer.mediaplayer.fragment.TrackListFragment;
 import by.itrex.jetfirer.mediaplayer.model.Playlist;
 import by.itrex.jetfirer.mediaplayer.service.MediaPlayerService;
@@ -45,6 +48,10 @@ public class PlaylistAdapter extends TrackListAdapter {
         TextView title = (TextView) convertView.findViewById(R.id.title);
         TextView artist = (TextView) convertView.findViewById(R.id.artist);
         TextView duration = (TextView) convertView.findViewById(R.id.duration);
+        CheckBox check = (CheckBox) convertView.findViewById(R.id.check);
+        int id = Resources.getSystem().getIdentifier("btn_check_holo_light", "drawable", "android");
+        check.setButtonDrawable(id);
+        check.setOnClickListener(context);
 
         Playlist playlist = (Playlist) getItem(position);
         if (playlist != null) {
@@ -73,7 +80,15 @@ public class PlaylistAdapter extends TrackListAdapter {
             }
         }
 
+        if (MediaPlayerActivity.newPlaylist != null) {
+            check.setVisibility(View.VISIBLE);
+            check.setChecked(MediaPlayerActivity.newPlaylist.getTracks().containsAll(playlist.getTracks()));
+        } else {
+            check.setVisibility(View.GONE);
+        }
+
         convertView.setTag(playlist);
+        check.setTag(playlist);
 
         convertView.setOnClickListener(context);
 

@@ -1,7 +1,5 @@
 package by.itrex.jetfirer.mediaplayer.model;
 
-import android.net.Uri;
-
 /**
  * Created by Konstantin on 25.04.2015.
  */
@@ -85,6 +83,31 @@ public class Track implements Comparable<Track> {
                 ", data='" + data + '\'' +
                 ", duration=" + duration +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Track track = (Track) o;
+
+        if (duration != track.duration) return false;
+        if (title != null ? !title.equals(track.title) : track.title != null) return false;
+        if (artist != null ? !artist.equals(track.artist) : track.artist != null) return false;
+        if (album != null ? !album.equals(track.album) : track.album != null) return false;
+        return !(data != null ? !data.equals(track.data) : track.data != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = title != null ? title.hashCode() : 0;
+        result = 31 * result + (artist != null ? artist.hashCode() : 0);
+        result = 31 * result + (album != null ? album.hashCode() : 0);
+        result = 31 * result + (data != null ? data.hashCode() : 0);
+        result = 31 * result + duration;
+        return result;
     }
 
     @Override

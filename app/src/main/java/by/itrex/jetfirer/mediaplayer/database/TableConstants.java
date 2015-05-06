@@ -29,7 +29,7 @@ public class TableConstants {
     public static final String TRACK_ID = "track_id";
     public static final String PLAYLIST_ID = "playlist_id";
 
-    public static final String CREATE_TRACk_TABLE =
+    public static final String CREATE_TRACK_TABLE =
             CREATE + TRACK_TABLE
                     + GEN_ID
                     + ARTIST + " TEXT, "

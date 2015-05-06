@@ -43,10 +43,20 @@ public class TrackListFragment extends Fragment implements View.OnClickListener 
     @Override
     public void onClick(View v) {
         Track track = (Track) v.getTag();
-
-        ((MediaPlayerActivity) getActivity()).startTrack(playlist, track);
-
-        trackListAdapter.notifyDataSetChanged();
+        switch (v.getId()) {
+            case R.id.list_item:
+                ((MediaPlayerActivity) getActivity()).startTrack(playlist, track);
+                trackListAdapter.notifyDataSetChanged();
+                break;
+            case R.id.check:
+                if (MediaPlayerActivity.newPlaylist.getTracks().contains(track)) {
+                    MediaPlayerActivity.newPlaylist.getTracks().remove(track);
+                } else {
+                    MediaPlayerActivity.newPlaylist.getTracks().add(track);
+                }
+                trackListAdapter.notifyDataSetChanged();
+                break;
+        }
     }
 
     @Override

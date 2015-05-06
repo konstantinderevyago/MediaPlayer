@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import static by.itrex.jetfirer.mediaplayer.database.TableConstants.CREATE_PLAYLIST_TABLE;
 import static by.itrex.jetfirer.mediaplayer.database.TableConstants.CREATE_PLAYLIST_TRACk_TABLE;
-import static by.itrex.jetfirer.mediaplayer.database.TableConstants.CREATE_TRACk_TABLE;
+import static by.itrex.jetfirer.mediaplayer.database.TableConstants.CREATE_TRACK_TABLE;
 import static by.itrex.jetfirer.mediaplayer.database.TableConstants.DROP_PLAYLIST_TABLE;
 import static by.itrex.jetfirer.mediaplayer.database.TableConstants.DROP_PLAYLIST_TRACK_TABLE;
 import static by.itrex.jetfirer.mediaplayer.database.TableConstants.DROP_TRACK_TABLE;
@@ -25,7 +25,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(CREATE_TRACk_TABLE);
+        db.execSQL(CREATE_TRACK_TABLE);
         db.execSQL(CREATE_PLAYLIST_TABLE);
         db.execSQL(CREATE_PLAYLIST_TRACk_TABLE);
     }
