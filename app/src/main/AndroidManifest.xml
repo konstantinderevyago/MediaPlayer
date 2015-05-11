@@ -11,6 +11,19 @@
         android:icon="@drawable/ic_launch"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
+
+        <receiver
+            android:name=".widget.MediaPlayerWidget"
+            android:icon="@drawable/ic_launch">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <!--<action android:name="ru.example.android.widget.ACTION_WIDGET_RECEIVER" />-->
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_metadata">
+            </meta-data>
+        </receiver>
         <activity
             android:name=".activity.MediaPlayerActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"

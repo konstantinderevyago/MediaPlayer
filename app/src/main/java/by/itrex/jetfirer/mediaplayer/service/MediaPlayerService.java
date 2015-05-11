@@ -1,6 +1,7 @@
 package by.itrex.jetfirer.mediaplayer.service;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -13,6 +14,7 @@ import java.util.Stack;
 import by.itrex.jetfirer.mediaplayer.enums.Repeat;
 import by.itrex.jetfirer.mediaplayer.model.Playlist;
 import by.itrex.jetfirer.mediaplayer.model.Track;
+import by.itrex.jetfirer.mediaplayer.util.Utils;
 
 /**
  * Created by Konstantin on 25.04.2015.
@@ -47,6 +49,15 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnComplet
 
         previousTracks = new Stack<>();
         nextTracks = new Stack<>();
+    }
+
+    public void initDefaultPlaylist(Context context) {
+        if (playlist == null) {
+            playlist = Utils.getDefaultPlaylist(context);
+            if (!playlist.getTracks().isEmpty()) {
+                currentTrack = playlist.getTracks().get(0);
+            }
+        }
     }
 
     @Override
