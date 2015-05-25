@@ -77,11 +77,14 @@ public class TrackListAdapter extends BaseAdapter {
             MediaPlayerService mediaPlayerService = MediaPlayerService.getInstance();
             if (mediaPlayerService != null) {
                 if (!track.equals(mediaPlayerService.getCurrentTrack())) {
-                    title.setTextColor(Color.WHITE);
-                    artist.setTextColor(Color.WHITE);
-                    duration.setTextColor(Color.WHITE);
+                    int color = Utils.getColor(context.getActivity());
+                    title.setTextColor(color);
+                    artist.setTextColor(color);
+                    duration.setTextColor(color);
                 } else {
-                    int color = 0xFF0030FF;
+//                    int color = 0xFF0030FF;
+//                    int color = 0xFF33B5E5;
+                    int color = Utils.getSelectedColor(context.getActivity());
                     title.setTextColor(color);
                     artist.setTextColor(color);
                     duration.setTextColor(color);
@@ -100,6 +103,7 @@ public class TrackListAdapter extends BaseAdapter {
         check.setTag(track);
 
         convertView.setOnClickListener(context);
+        convertView.setOnLongClickListener(context);
 
         return convertView;
     }

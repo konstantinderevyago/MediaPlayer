@@ -15,6 +15,7 @@ import by.itrex.jetfirer.mediaplayer.activity.MediaPlayerActivity;
 import by.itrex.jetfirer.mediaplayer.fragment.TrackListFragment;
 import by.itrex.jetfirer.mediaplayer.model.Playlist;
 import by.itrex.jetfirer.mediaplayer.service.MediaPlayerService;
+import by.itrex.jetfirer.mediaplayer.util.Utils;
 
 /**
  * Created by Konstantin on 29.04.2015.
@@ -68,11 +69,14 @@ public class PlaylistAdapter extends TrackListAdapter {
             MediaPlayerService mediaPlayerService = MediaPlayerService.getInstance();
             if (mediaPlayerService != null) {
                 if (!playlist.equals(mediaPlayerService.getPlaylist())) {
-                    title.setTextColor(Color.WHITE);
-                    artist.setTextColor(Color.WHITE);
-                    duration.setTextColor(Color.WHITE);
+                    int color = Utils.getColor(context.getActivity());
+                    title.setTextColor(color);
+                    artist.setTextColor(color);
+                    duration.setTextColor(color);
                 } else {
-                    int color = 0xFF0030FF;
+//                    int color = 0xFF0030FF;
+//                    int color = 0xFF33B5E5;
+                    int color = Utils.getSelectedColor(context.getActivity());
                     title.setTextColor(color);
                     artist.setTextColor(color);
                     duration.setTextColor(color);

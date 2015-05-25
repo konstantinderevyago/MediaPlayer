@@ -1,51 +1,69 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:background="@drawable/main_background">
+    android:background="@drawable/main_background"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:orientation="horizontal">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
 
-        <ImageButton
-            android:layout_width="40dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/add"
-            android:background="@null"
-            android:src="@drawable/button_add_selector"
-            android:padding="5dp"
-            android:scaleType="fitCenter" />
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin">
 
-        <SearchView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:id="@+id/search_view" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/add"
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:padding="5dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/button_add_selector" />
+
+            <SearchView
+                android:id="@+id/search_view"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <ImageButton
+                android:id="@+id/settings"
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:scaleType="fitCenter"
+                android:src="@drawable/button_settings_selector" />
+
+        </LinearLayout>
+
+        <fragment
+            android:id="@+id/media_player_controller"
+            android:name="by.itrex.jetfirer.mediaplayer.widget.MediaPlayerController"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/playlist_view_pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <android.support.v4.view.PagerTabStrip
+                style="@style/PagerTabStripText"
+                android:id="@+id/playlist_pager_tab_strip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </android.support.v4.view.ViewPager>
 
     </LinearLayout>
-
-    <fragment
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/media_player_controller"
-        android:name="by.itrex.jetfirer.mediaplayer.widget.MediaPlayerController" />
-
-    <android.support.v4.view.ViewPager
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/playlist_view_pager">
-
-        <android.support.v4.view.PagerTabStrip
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            style="@style/PagerTabStripText"/>
-
-    </android.support.v4.view.ViewPager>
 
 </LinearLayout>

@@ -16,7 +16,7 @@ import by.itrex.jetfirer.mediaplayer.model.Track;
 /**
  * Created by Konstantin on 27.04.2015.
  */
-public class TrackListFragment extends Fragment implements View.OnClickListener {
+public class TrackListFragment extends Fragment implements View.OnClickListener, View.OnLongClickListener {
 
     protected ListView trackList;
     protected TrackListAdapter trackListAdapter;
@@ -57,6 +57,11 @@ public class TrackListFragment extends Fragment implements View.OnClickListener 
                 trackListAdapter.notifyDataSetChanged();
                 break;
         }
+    }
+
+    @Override
+    public boolean onLongClick(View v) {
+        return false;
     }
 
     @Override

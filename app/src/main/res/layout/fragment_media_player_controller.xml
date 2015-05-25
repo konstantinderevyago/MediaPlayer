@@ -18,7 +18,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/playing_title"
-                android:textColor="@color/white"
+                android:shadowRadius="2"
+                android:shadowDx="1"
+                android:shadowDy="1"
+                android:shadowColor="@color/black"
                 android:textSize="@dimen/title_size"
                 android:singleLine="true"
                 android:ellipsize="marquee"
@@ -32,7 +35,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/playing_artist"
-                android:textColor="@color/white"
+                android:shadowRadius="2"
+                android:shadowDx="1"
+                android:shadowDy="1"
+                android:shadowColor="@color/black"
                 android:textSize="@dimen/artist_size"
                 android:singleLine="true"
                 android:ellipsize="marquee"
@@ -80,6 +86,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/playing_duration"
+            android:shadowRadius="2"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:shadowColor="@color/black"
             android:text="@string/track_duration_zero"
             android:textSize="@dimen/track_duration_size"/>
 
@@ -93,6 +103,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/max_duration"
+            android:shadowRadius="2"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:shadowColor="@color/black"
             android:text="@string/track_duration_zero"
             android:textSize="@dimen/track_duration_size"/>
 
@@ -111,7 +125,7 @@
 
             <ImageButton
                 android:layout_width="@dimen/media_buttons_size"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/media_buttons_size"
                 android:id="@+id/previous_button"
                 android:background="@drawable/button_previous_selector"/>
 
@@ -125,7 +139,7 @@
 
             <ImageButton
                 android:layout_width="@dimen/media_buttons_size"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/media_buttons_size"
                 android:id="@+id/stop_button"
                 android:background="@drawable/button_stop_selector"/>
 
@@ -139,7 +153,7 @@
 
             <ImageButton
                 android:layout_width="@dimen/media_buttons_size"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/media_buttons_size"
                 android:id="@+id/play_button"
                 android:background="@drawable/button_play_selector"/>
 
@@ -153,7 +167,7 @@
 
             <ImageButton
                 android:layout_width="@dimen/media_buttons_size"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/media_buttons_size"
                 android:id="@+id/pause_button"
                 android:background="@drawable/button_pause_selector"/>
 
@@ -167,7 +181,7 @@
 
             <ImageButton
                 android:layout_width="@dimen/media_buttons_size"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/media_buttons_size"
                 android:id="@+id/next_button"
                 android:background="@drawable/button_next_selector"/>
 

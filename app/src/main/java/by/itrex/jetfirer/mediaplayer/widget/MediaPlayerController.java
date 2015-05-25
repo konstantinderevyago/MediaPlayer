@@ -2,6 +2,7 @@ package by.itrex.jetfirer.mediaplayer.widget;
 
 import android.app.Fragment;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,6 +11,8 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
+
+import java.io.File;
 
 import by.itrex.jetfirer.mediaplayer.R;
 import by.itrex.jetfirer.mediaplayer.activity.MediaPlayerActivity;
@@ -68,9 +71,45 @@ public class MediaPlayerController extends Fragment implements View.OnClickListe
         nextButton.setOnClickListener(this);
         durationProgress.setOnSeekBarChangeListener(this);
 
+        initTextViews();
+        initButtons();
+
         initMediaPlayerService();
 
         return view;
+    }
+
+    public void initTextViews() {
+        int color = Utils.getColor(getActivity());
+        playingTitle.setTextColor(color);
+        playingArtist.setTextColor(color);
+        playingDuration.setTextColor(color);
+        maxDuration.setTextColor(color);
+    }
+
+    public void initButtons() {
+        setImage(previousButton, Utils.getPreviousImage(getActivity()), R.drawable.button_previous_selector);
+        setImage(stopButton, Utils.getStopImage(getActivity()), R.drawable.button_stop_selector);
+        setImage(playButton, Utils.getPlayImage(getActivity()), R.drawable.button_play_selector);
+        setImage(pauseButton, Utils.getPauseImage(getActivity()), R.drawable.button_pause_selector);
+        setImage(nextButton, Utils.getNextImage(getActivity()), R.drawable.button_next_selector);
+    }
+
+    private void setImage(ImageButton button, String path, int defaultResouce) {
+        try {
+            Drawable drawable = getResources().getDrawable(defaultResouce);
+            if (path != null) {
+                File file = new File(path);
+                drawable = Drawable.createFromPath(file.getPath());
+            }
+            if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                button.setBackgroundDrawable(drawable);
+            } else {
+                button.setBackground(drawable);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void initMediaPlayerService() {
@@ -301,5 +340,9 @@ public class MediaPlayerController extends Fragment implements View.OnClickListe
         }
         seekBarHandler = new SeekBarHandler();
         seekBarHandler.execute();
+    }
+
+    public SeekBar getDurationProgress() {
+        return durationProgress;
     }
 }
