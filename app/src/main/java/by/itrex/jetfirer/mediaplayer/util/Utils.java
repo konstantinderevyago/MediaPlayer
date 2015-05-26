@@ -462,7 +462,7 @@ public class Utils {
 
     public static int getColor(Context context) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        return preferences.getInt(COLOR, 0xfffff);
+        return preferences.getInt(COLOR, 0xffffffff);
     }
 
     public static void saveColor(Context context, int color) {

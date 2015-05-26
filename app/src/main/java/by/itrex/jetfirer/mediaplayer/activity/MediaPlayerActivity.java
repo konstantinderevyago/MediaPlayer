@@ -72,6 +72,9 @@ public class MediaPlayerActivity extends FragmentActivity implements View.OnClic
     private MenuItem itemColor;
     private MenuItem itemSelectedColor;
     private MenuItem itemReset;
+    private MenuItem itemVk;
+    private MenuItem itemAddPlaylist;
+    private MenuItem itemAddTrack;
 
     private LinearLayout root;
     private ImageButton add;
@@ -145,6 +148,9 @@ public class MediaPlayerActivity extends FragmentActivity implements View.OnClic
         itemColor = new MenuItem(this, R.drawable.color, "Color");
         itemSelectedColor = new MenuItem(this, R.drawable.color, "Select");
         itemReset = new MenuItem(this, R.drawable.reset, "Reset");
+        itemVk = new MenuItem(this, R.drawable.vk, "VK");
+        itemAddPlaylist = new MenuItem(this, R.drawable.add_button_pressed, "Playlist");
+        itemAddTrack = new MenuItem(this, R.drawable.add_button_pressed, "Track");
 
         itemBackground.setOnClickListener(this);
         itemPrevious.setOnClickListener(this);
@@ -157,6 +163,9 @@ public class MediaPlayerActivity extends FragmentActivity implements View.OnClic
         itemColor.setOnClickListener(this);
         itemSelectedColor.setOnClickListener(this);
         itemReset.setOnClickListener(this);
+        itemVk.setOnClickListener(this);
+        itemAddPlaylist.setOnClickListener(this);
+        itemAddTrack.setOnClickListener(this);
 
         resideMenu.addMenuItem(itemBackground, ResideMenu.DIRECTION_RIGHT);
         resideMenu.addMenuItem(itemPrevious, ResideMenu.DIRECTION_RIGHT);
@@ -167,6 +176,9 @@ public class MediaPlayerActivity extends FragmentActivity implements View.OnClic
         resideMenu.addMenuItem(itemColor, ResideMenu.DIRECTION_RIGHT);
         resideMenu.addMenuItem(itemSelectedColor, ResideMenu.DIRECTION_RIGHT);
         resideMenu.addMenuItem(itemReset, ResideMenu.DIRECTION_RIGHT);
+        resideMenu.addMenuItem(itemVk, ResideMenu.DIRECTION_LEFT);
+        resideMenu.addMenuItem(itemAddPlaylist, ResideMenu.DIRECTION_LEFT);
+        resideMenu.addMenuItem(itemAddTrack, ResideMenu.DIRECTION_LEFT);
 //        resideMenu.addMenuItem(itemRandom, ResideMenu.DIRECTION_RIGHT);
 //        resideMenu.addMenuItem(itemRepeat, ResideMenu.DIRECTION_RIGHT);
     }
@@ -243,6 +255,9 @@ public class MediaPlayerActivity extends FragmentActivity implements View.OnClic
         itemColor.setTextColor(color);
         itemSelectedColor.setTextColor(color);
         itemReset.setTextColor(color);
+        itemVk.setTextColor(color);
+        itemAddPlaylist.setTextColor(color);
+        itemAddTrack.setTextColor(color);
     }
 
     private void initVkSdk() {
@@ -346,7 +361,8 @@ public class MediaPlayerActivity extends FragmentActivity implements View.OnClic
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.add:
-                addToList();
+//                addToList();
+                resideMenu.openMenu(ResideMenu.DIRECTION_LEFT);
                 break;
             case R.id.settings:
                 resideMenu.openMenu(ResideMenu.DIRECTION_RIGHT);
@@ -376,14 +392,20 @@ public class MediaPlayerActivity extends FragmentActivity implements View.OnClic
             Utils.clearSelectedColor(this);
 
             setRootBackground(null);
+            playlistPagerTabStrip.setTextColor(Utils.getSelectedColor(this));
             mediaPlayerController.initButtons();
+            mediaPlayerController.initTextViews();
+            notifyCurrentList();
+            updateMenuItems();
         } else if (v == itemColor) {
             colorChooser.show();
         } else if (v == itemSelectedColor) {
             selectedColorChooser.show();
+        } else if (v == itemAddPlaylist) {
+            addToList();
         }
 
-        if (v.getId() != R.id.settings) {
+        if (v.getId() != R.id.settings && v.getId() != R.id.add) {
             resideMenu.closeMenu();
         }
     }
